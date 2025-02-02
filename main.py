@@ -2,14 +2,15 @@ import time
 import os
 import random
 import tempfile
+from fastapi.responses import HTMLResponse
+from fastapi.staticfiles import StaticFiles
 from git import Repo
 from fastapi import FastAPI, HTTPException, Query
 from fastapi.middleware.cors import CORSMiddleware
 import uvicorn
-# Initialize FastAPI app
 app = FastAPI()
 
-# Enable CORS
+# CORS
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -18,12 +19,11 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Configuration
 REPO_URL = "https://github.com/Sandesh2007/wall_bank"
 TEMP_DIR = tempfile.gettempdir()
 REPO_DIR = os.path.join(TEMP_DIR, "wallpapers")
 
-# Server status tracking
+# status tracking
 server_status = {
     "state": "starting",
     "message": "Server is starting...",
@@ -38,7 +38,17 @@ def update_status(state: str, message: str):
     server_status["last_updated"] = time.time()
 
 
-@app.get("/status/")
+@app.get("/", response_class=HTMLResponse)
+def read_html():
+    """Serve the HTML file at the root."""
+    try:
+        with open("static/index.html", "r") as file:
+            return HTMLResponse(content=file.read(), status_code=200)
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error reading HTML file: {str(e)}")
+app.mount("/static", StaticFiles(directory="static"), name="static")
+
+@app.get("/status")
 def get_status():
     """Get the server status."""
     return {
@@ -48,7 +58,7 @@ def get_status():
     }
 
 
-# Supported image extensions
+# supported image extensions
 SUPPORTED_EXTENSIONS = {".jpg", ".jpeg", ".png"}
 
 
