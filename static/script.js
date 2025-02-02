@@ -2,9 +2,9 @@ const loader = document.getElementById("loader");
 const serverStatus = document.getElementById("serverstatus");
 const STATUS_CHECK_INTERVAL = 12000;  //12 sec
 
-const BASE_URI = "http://localhost:8080/"
-const STATUS_URL = "http://localhost:8080/status/"
-const CATEGORY_URL = "http://localhost:8080/categories/"
+const BASE_URI = "https://api-production-673a.up.railway.app/"
+const STATUS_URL = "https://api-production-673a.up.railway.app/status/"
+const CATEGORY_URL = "https://api-production-673a.up.railway.app/categories/"
 
 const requestCounter = {
     status: 0,
